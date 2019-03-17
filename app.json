@@ -22,6 +22,14 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "org.howardcenter.saferecovery",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCdg-ITV6e6vsyHHv9wXEy01fr_UgTWft8"
+        }
+      }
+    },
     "ios": {
       "supportsTablet": true
     }

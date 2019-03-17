@@ -1,5 +1,5 @@
 export default {
-    Ionicons: "ionicons",
-    FontAwesome: "fontAwesome",
-    Feather: "feather",
-}
+  Ionicons: 'ionicons',
+  FontAwesome: 'fontAwesome',
+  Feather: 'feather',
+};

@@ -39,9 +39,9 @@ MapStack.navigationOptions = {
     <TabBarIcon
       type={IconType.Feather}
       focused={focused}
-      name='map-pin'
+      name="map-pin"
     />
-  )
+  ),
 };
 
 const ContactStack = createStackNavigator({
@@ -56,8 +56,8 @@ ContactStack.navigationOptions = {
       focused={focused}
       name="question-circle"
     />
-  )
-}
+  ),
+};
 
 const ReminderStack = createStackNavigator({
   Reminder: ReminderScreen,
@@ -71,12 +71,12 @@ ReminderStack.navigationOptions = {
       focused={focused}
       name={
         Platform.OS === 'ios'
-        ? 'ios-calendar'
-        : 'md-calendar'
+          ? 'ios-calendar'
+          : 'md-calendar'
       }
     />
-  )
-}
+  ),
+};
 
 export default createBottomTabNavigator({
   HomeStack,

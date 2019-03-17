@@ -3,8 +3,8 @@ import {
   View,
   Text,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import SafeMap from '../components/SafeMap';
 
 const styles = StyleSheet.create({

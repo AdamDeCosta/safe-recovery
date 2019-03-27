@@ -4,3 +4,5 @@ yarn.lock
 .watchmanconfig
 .eslintrc.json
 yarn-error.log
+package-lock.json
+.expo/

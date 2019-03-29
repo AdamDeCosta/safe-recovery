@@ -1,121 +1,73 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
-<<<<<<< HEAD
-=======
-import {
-  Constants,
-  Location,
-  Permissions,
-  MapView,
-} from 'expo';
-import { ScrollView } from 'react-native-gesture-handler';
->>>>>>> 70a09e0f2aba8f46d1535bf8c7e673e85123a5a4
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { Constants, Location, Permissions, MapView } from 'expo';
 import SafeMap from '../components/SafeMap';
-import axios from 'axios';
+import * as data from '../assets/locations.json';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   contentContainer: {
-    paddingTop: 30,
-  },
+    paddingTop: 30
+  }
 });
 
 export default class MapScreen extends React.Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   state = {
     errorMessage: null,
     location: null,
-    markers: null,
-  }
+    markers: null
+  };
 
   componentDidMount() {
-    this._getLocationAsync().then((loc) => {
-      if (loc) {
-        this.setState(
-          {
-            location: {
-              latitude: loc.coords.latitude,
-              longitude: loc.coords.longitude,
-              latitudeDelta: 0.04,
-              longitudeDelta: 0.04,
-            },
-          },
-        );
-
-        this._loadMarkers(loc.coords).then((response) => {
-          if (response.data) {
-            const markers = response.data.candidates.map((marker) => {
-              const coordinate = {
-                latitude: marker.geometry.location.lat,
-                longitude: marker.geometry.location.lng,
-              };
-
-              return (
-                <MapView.Marker
-                  key={marker.id}
-                  coordinate={coordinate}
-                  title={marker.name}
-                  description={marker.formatted_address}
-                />
-              );
-            });
-
-            this.setState({ markers });
-          }
-        })
-          .catch((error) => {
-            this.setState({ errorMessage: error });
-          });
-      }
-    });
+    this._getLocationAsync();
+    this._loadMarkers();
   }
 
   _getLocationAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
+
     if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
-    }
+      this.setState({ location: undefined });
+    } else {
+      loc = await Location.getCurrentPositionAsync({});
+      const location = {
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      };
 
-    return Location.getCurrentPositionAsync({});
-  }
-
-  _loadMarkers = (coords) => {
-    try {
-      return axios.get('https://maps.googleapis.com/maps/api/place/findplacefromtext/json', {
-        params: {
-          key: Constants.manifest.android.config.googleMaps.apiKey,
-          input: 'safe recovery',
-          inputtype: 'textquery',
-          fields: 'geometry,formatted_address,name,id',
-          locationbias: `circle:5000@${coords.latitude},${coords.longitude}`,
-        },
-      });
-    } catch (error) {
-      return console.error(error);
+      this.setState({ location });
     }
+  };
+
+  _loadMarkers = () => {
+    markers = data.addresses.map((address) => (
+      <MapView.Marker
+        coordinate={address.coordinates}
+        title={address.name}
+        description={address.address}
+        key={address.address}
+      />
+    ));
+    this.setState({ markers });
   };
 
   render() {
     const { location, markers } = this.state;
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <SafeMap
-            location={location}
-          >
-            {markers}
-          </SafeMap>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.contentContainer}
+        >
+          <SafeMap location={location}>{markers}</SafeMap>
         </ScrollView>
       </View>
     );

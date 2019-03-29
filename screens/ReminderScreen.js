@@ -8,12 +8,49 @@ import {
   TimePickerAndroid,
   DatePickerAndroid
 } from 'react-native';
-import { Notifications } from 'expo';
+import { Notifications, FileSystem } from 'expo';
 
 export default class ReminderScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
+
+  dir = FileSystem.documentDirectory + "sr/reminders.json";
+
+  state = {
+    reminders: {
+      notifications: []
+    }
+  }
+
+  componentDidMount() {
+    this._loadReminders();
+  }
+
+  _loadReminders = async () => {
+    const { exists } = await FileSystem.getInfoAsync(this.dir);
+    if (exists) {
+      FileSystem.readAsStringAsync(this.dir).then((reminders) => {
+        this.setState({ reminders });
+      })
+    } else {
+      this.setState({ reminders: {
+        notifications: []
+      } });
+    }
+  }
+
+  _storeNotification = async (notification) => {
+     const { reminders } = this.state;
+     reminders.notifications.append(notification)
+     this.setState({reminders})
+     await this._saveReminders();
+  }
+
+  _saveReminders = async () => {
+    const { reminders } = this.state;
+    await FileSystem.writeAsStringAsync(this.dir, JSON.stringify(reminders));
+  }
 
   _scheduleReminder = async () => {
     const notification = {
@@ -31,9 +68,17 @@ export default class ReminderScreen extends React.Component {
         is24Hour: false
       });
       if (action !== TimePickerAndroid.dismissedAction) {
-        await Notifications.scheduleLocalNotificationAsync(notification, {
+        const push = await Notifications.scheduleLocalNotificationAsync(notification, {
           time: new Date(year, month, day, hour, minute)
         });
+
+        if (push !== undefined) {
+          const noteObj = {
+            id: {push},
+            date: new Date(year, month, day, hour, minute),
+          }
+          await this._storeNotification(noteObj);
+        }
       }
     }
   };

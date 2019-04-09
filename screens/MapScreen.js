@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Button } from 'react-native';
+import SegmentedControlTab from 'react-native-segmented-control-tab';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import SafeMap from '../components/SafeMap';
 import * as data from '../assets/locations.json';
@@ -10,8 +11,20 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingTop: 30
-  }
+  },
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  button: {}
 });
+
+const locTypes = {
+  ALL: '',
+  NARCAN: 'red',
+  TYPE_2: 'blue',
+  TYPE_3: 'yellow'
+};
 
 export default class MapScreen extends React.Component {
   static navigationOptions = {
@@ -21,7 +34,9 @@ export default class MapScreen extends React.Component {
   state = {
     errorMessage: null,
     location: null,
-    markers: null
+    visableMarkers: null,
+    markers: null,
+    selected: 0
   };
 
   componentDidMount() {
@@ -47,6 +62,14 @@ export default class MapScreen extends React.Component {
     }
   };
 
+  _filterMarkers = (locType) => {
+    visableMarkers = this.state.markers.filter(
+      (marker) => marker.props.pinColor === locType
+    );
+
+    this.setState({ visableMarkers });
+  };
+
   _loadMarkers = () => {
     markers = data.addresses.map((address) => (
       <MapView.Marker
@@ -54,21 +77,31 @@ export default class MapScreen extends React.Component {
         title={address.name}
         description={address.address}
         key={address.address}
+        pinColor={locTypes[address.type]}
       />
     ));
-    this.setState({ markers });
+    this.setState({ markers, visableMarkers: markers });
   };
 
   render() {
-    const { location, markers } = this.state;
+    const { location, visableMarkers } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
         >
-          <SafeMap location={location}>{markers}</SafeMap>
+          <SafeMap location={location}>{visableMarkers}</SafeMap>
         </ScrollView>
+        <SegmentedControlTab
+          selectedIndex={this.state.selected}
+          values={['All', 'Narcan', 'Type_2', 'Type_3']}
+          onTabPress={(index) => {
+            this.setState({ selected: index });
+            console.log(locTypes[index]);
+            this._filterMarkers(locTypes[index]);
+          }}
+        />
       </View>
     );
   }

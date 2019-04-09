@@ -6,7 +6,17 @@
       "coordinates": {
         "latitude": 44.4817970782369,
         "longitude": -73.2124024264908
-      }
+      },
+      "type": "NARCAN"
+    },
+    {
+      "name": "Howard Center Chittenden Clinic",
+      "address": "75 San Remo Dr, South Burlington, VT 05403",
+      "coordinates": {
+        "latitude": 44.4585371384847,
+        "longitude": -73.1780562621465
+      },
+      "type": "TYPE_2"
     }
   ]
 }

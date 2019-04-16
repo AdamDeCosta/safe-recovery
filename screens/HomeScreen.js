@@ -4,24 +4,75 @@ import {
   StyleSheet,
   Text,
   View,
+  FlatList,
 } from 'react-native';
-import Header from '../components/Header';
+import Accordian from 'react-native-collapsible/Accordion';
+
+const SECTIONS = [
+  {
+    title: 'Identify Opiod Overdose and Check for Response',
+    content: 
+      <>
+        <Text>Hey</Text>
+      </>
+  },
+  {
+    title: 'Give Narcan Nasal Spray',
+    content: 
+      <>
+        <Text>Remove NARCAN Nasal Spray from the box. Peel back the tab with the circle to open the NARCAN Nasal Spray.</Text>
+        <Text>Hold the NARCAN nasal spray with your thumb on the bottom of the plunger and your first and middle fingers on either side of the nozzle.</Text>
+        <Text>Gently insert the tip of the nozzle into either nostril.</Text>
+      </>
+  },
+  {
+    title: 'Call for emergency medical help, Evaluate, and Support',
+    content: <Text>Hey</Text>
+  }
+];
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
 
+  state = {
+    activeSections: [],
+  }
+
+  _renderSectionTitle = (section) => (
+    <View style={styles.content}>
+      <Text>{section.content}</Text>
+    </View>
+  )
+
+  _renderHeader = (section) => (
+    <View style={styles.header}>
+      <Text style={styles.headerText}>{section.title}</Text>
+    </View>
+  )
+
+  _renderContent = (section) => (
+    <View style={styles.content}>
+      {section.content}
+    </View>
+  )
+
+  _updateSections = (activeSections) => {
+    this.setState({ activeSections });
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <Header
-            text='Header #1'
+          <Accordian 
+            sections={SECTIONS}
+            activeSections={this.state.activeSections}
+            renderHeader={this._renderHeader}
+            renderContent={this._renderContent}
+            onChange={this._updateSections}
           />
-          <Text style={styles.bodyText}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </Text>
         </ScrollView>
       </View>
     );

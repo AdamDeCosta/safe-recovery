@@ -10,21 +10,27 @@ const styles = StyleSheet.create({
     flex: 1
   },
   contentContainer: {
-    paddingTop: 30
+    paddingTop: 25
   },
   buttonContainer: {
     display: 'flex',
     flexDirection: 'row'
   },
-  button: {}
 });
 
 const locTypes = {
-  ALL: '',
+  ALL: 'ALL',
   NARCAN: 'red',
   TYPE_2: 'blue',
-  TYPE_3: 'yellow'
+  TYPE_3: 'yellow',
 };
+
+const intToLoc = {
+  0: locTypes.ALL,
+  1: locTypes.NARCAN,
+  2: locTypes.TYPE_2,
+  3: locTypes.TYPE_3
+}
 
 export default class MapScreen extends React.Component {
   static navigationOptions = {
@@ -63,9 +69,14 @@ export default class MapScreen extends React.Component {
   };
 
   _filterMarkers = (locType) => {
-    visableMarkers = this.state.markers.filter(
-      (marker) => marker.props.pinColor === locType
-    );
+    if (locType !== locTypes.ALL) {
+      visableMarkers = this.state.markers.filter(
+        (marker) => marker.props.pinColor === locType
+      );
+    } else {
+      visableMarkers = this.state.markers;
+    }
+    
 
     this.setState({ visableMarkers });
   };
@@ -91,17 +102,17 @@ export default class MapScreen extends React.Component {
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
         >
+          <SegmentedControlTab
+            selectedIndex={this.state.selected}
+            values={['All', 'Narcan', 'Type_2', 'Type_3']}
+            onTabPress={(index) => {
+              this.setState({ selected: index });
+              console.log(intToLoc[index]);
+              this._filterMarkers(intToLoc[index]);
+            }}
+          />
           <SafeMap location={location}>{visableMarkers}</SafeMap>
         </ScrollView>
-        <SegmentedControlTab
-          selectedIndex={this.state.selected}
-          values={['All', 'Narcan', 'Type_2', 'Type_3']}
-          onTabPress={(index) => {
-            this.setState({ selected: index });
-            console.log(locTypes[index]);
-            this._filterMarkers(locTypes[index]);
-          }}
-        />
       </View>
     );
   }

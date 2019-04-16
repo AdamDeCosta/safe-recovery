@@ -7,13 +7,15 @@ export default class ContactScreen extends React.Component {
     header: null
   };
 
+  /*
   componentDidMount() {
     MailComposer.composeAsync({
       recipients: ['adam@decosta.io'],
-      subject: 'Howard Center test',
+      subject: 'From App: Question',
       body: 'Hey its adam!'
     });
   }
+  */
 
   render() {
     return (
@@ -22,7 +24,10 @@ export default class ContactScreen extends React.Component {
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
         >
-          <Text>Contact Screen</Text>
+          <Text>Contact the Howard Center</Text>
+          <Text>(Currently yours as I don't have another) Phone - 343-0614</Text>
+          <Text>Address: 45 Clarke Street, Burlington VT 05401</Text>
+          <Text>Email: GraceK@howardcenter.org</Text>
         </ScrollView>
       </View>
     );

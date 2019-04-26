@@ -3,20 +3,236 @@
     {
       "name": "Howard Center Safe Recovery",
       "address": "45 Clarke Street, Burlington VT",
+      "type": "NARCAN",
       "coordinates": {
         "latitude": 44.4817970782369,
         "longitude": -73.2124024264908
-      },
-      "type": "NARCAN"
+      }
     },
     {
-      "name": "Howard Center Chittenden Clinic",
-      "address": "75 San Remo Dr, South Burlington, VT 05403",
+      "name": "AIDS Project of Southern Vermont",
+      "address": "15 Grove Street, Brattleboro VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 42.8547142430188,
+        "longitude": -72.5598475855794
+      }
+    },
+    {
+      "name": "Vermont CARES",
+      "address": "553 North Main St. #5, Barre VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 44.2083672204866,
+        "longitude": -72.5139965304326
+      }
+    },
+    {
+      "name": "Vermont CARES",
+      "address": "1 Scale Avenue, Building 18 Suite 103, Rutland VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 43.5986281157551,
+        "longitude": -72.9747974873565
+      }
+    },
+    {
+      "name": "Vermont CARES",
+      "address": "1091 Hospital Drive, Suite 1, Saint Johnsbury, VT 05819",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 44.4453669135926,
+        "longitude": -72.0140097897144
+      }
+    },
+    {
+      "name": "Good Neighbor Clinic",
+      "address": "70 North Main Street, White River Junction, VT 05001",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 43.6490859752061,
+        "longitude": -72.3199268531639
+      }
+    },
+    {
+      "name": "Springfield Health Center",
+      "address": "100 River Street, Springfield VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 43.3021549056547,
+        "longitude": -72.4853768691611
+      }
+    },
+    {
+      "name": "Turning Point of Center Addison County",
+      "address": "54 A1 Creek Road, Middlebury VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 44.0042760767324,
+        "longitude": -73.1599346679208
+      }
+    },
+    {
+      "name": "Turning Point Center of Bennington County",
+      "address": "465 Main Street, Bennington VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 42.8781419710783,
+        "longitude": -73.1951402435428
+      }
+    },
+    {
+      "name": "Turning Point Center of Rutland",
+      "address": "141 State Street, Rutland VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 43.6089311160566,
+        "longitude": -72.986028110987
+      }
+    },
+    {
+      "name": "Turning Point of Central Vermont",
+      "address": "489 N Main Street, Barre VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 44.2063422850895,
+        "longitude": -72.5121307409945
+      }
+    },
+    {
+      "name": "Turning Point Center of Chittenden County",
+      "address": "179 S Winooski Ave Suite 301, Burlington VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 44.4749915836302,
+        "longitude": -73.210822992891
+      }
+    },
+    {
+      "name": "Turning Point of Franklin County",
+      "address": "182 Lake Street, St Albans City VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 44.8111218375194,
+        "longitude": -73.0905483839286
+      }
+    },
+    {
+      "name": "Turning Point Recovery Center of Springfield",
+      "address": "7 Morgan Street, Springfield VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 43.3017333583825,
+        "longitude": -72.4887160594907
+      }
+    },
+    {
+      "name": "Turning Point of Windham County",
+      "address": "39 Elm Street, Brattleboro VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 42.8500899999668,
+        "longitude": -72.5611399989629
+      }
+    },
+    {
+      "name": "Upper Valley Turning Point",
+      "address": "200 Olcott Drive, White River Junction VT",
+      "type": "NARCAN",
+      "coordinates": {
+        "latitude": 43.6944826414575,
+        "longitude": -72.31534069959
+      }
+    },
+    {
+      "name": "BAART St. Albans",
+      "address": "242 S Main St, St. Albans 05478",
+      "type": "HUB",
+      "coordinates": {
+        "latitude": 44.7981159031226,
+        "longitude": -73.0915846568914
+      }
+    },
+    {
+      "name": "BAART Berlin",
+      "address": "617 Comstock Road, Berlin 05602",
+      "type": "HUB",
+      "coordinates": {
+        "latitude": 44.2071717833765,
+        "longitude": -72.5645220527544
+      }
+    },
+    {
+      "name": "BAART St. Johnsbury",
+      "address": "1097 Hospital Drive, St. Johnsbury 05819",
+      "type": "HUB",
+      "coordinates": {
+        "latitude": 44.4453560190942,
+        "longitude": -72.0133738008186
+      }
+    },
+    {
+      "name": "BAART Newport",
+      "address": "475 Union Street, Newport 05855",
+      "type": "HUB",
+      "coordinates": {
+        "latitude": 44.9485569921276,
+        "longitude": -72.2000717980391
+      }
+    },
+    {
+      "name": "Chittenden Clinic",
+      "address": "75 San Remo Drive, South Burlington VT",
+      "type": "HUB",
       "coordinates": {
         "latitude": 44.4585371384847,
         "longitude": -73.1780562621465
-      },
-      "type": "TYPE_2"
+      }
+    },
+    {
+      "name": "Community Healthcare Clinic",
+      "address": "102 Main Street, Greenfield, MA 01301",
+      "type": "HUB",
+      "coordinates": {
+        "latitude": 42.587542890977,
+        "longitude": -72.6055897632037
+      }
+    },
+    {
+      "name": "CVSAS",
+      "address": "100 Hospitality Drive, Barre 05641",
+      "type": "HUB",
+      "coordinates": {
+        "latitude": 44.2171399999643,
+        "longitude": -72.5561399989109
+      }
+    },
+    {
+      "name": "Habit OpCo",
+      "address": "254 N Plainfield Road, West Lebanon, NH",
+      "type": "HUB",
+      "coordinates": {
+        "latitude": 43.6278253296222,
+        "longitude": -72.3232190480154
+      }
+    },
+    {
+      "name": "Habit OpCo",
+      "address": "16 Town Crier Dr Brattleboro, VT",
+      "type": "HUB",
+      "coordinates": {
+        "latitude": 42.8709099999664,
+        "longitude": -72.5568399989495
+      }
+    },
+    {
+      "name": "UVM S.A. Treatment Center",
+      "address": "1 South Prospect Street, #1415, Burlington",
+      "type": "HUB",
+      "coordinates": {
+        "latitude": 44.4800982748308,
+        "longitude": -73.2005194143388
+      }
     }
   ]
 }

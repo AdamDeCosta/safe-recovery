@@ -4,129 +4,178 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  Button,
-  TimePickerAndroid,
-  DatePickerAndroid
+  TouchableOpacity,
+  DatePickerAndroid,
+  Alert,
+  FlatList
 } from 'react-native';
-import { Notifications, FileSystem } from 'expo';
+import { Calendar, Permissions, Localization } from 'expo';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Platform } from 'expo-core';
+import { ReminderList } from '../components/Reminders';
+import { tintColor } from '../constants/Colors';
 
 export default class ReminderScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this._deleteEvent = this._deleteEvent.bind(this);
+  }
   static navigationOptions = {
     header: null
   };
 
-  dir = FileSystem.documentDirectory + "sr/reminders.json";
-
   state = {
-    reminders: {
-      notifications: []
-    },
-    remindersJSX: null
-  }
+    calendar: null,
+    events: null
+  };
 
   componentDidMount() {
-    this._loadReminders();
-  }
-
-  _generateReminderJSX = (reminders) => {
-    const remindersJSX = reminders.notifications.map((notification) => {
-      const date = notification.date.toString();
-      return (
-        <Text key={notification.id}>{ date }</Text>
-      )
-    })
-
-    return remindersJSX;
-  }
-
-  _loadReminders = async () => {
-    const { exists } = await FileSystem.getInfoAsync(this.dir);
-    if (exists) {
-      FileSystem.readAsStringAsync(this.dir).then((reminders) => {
-        reminders = JSON(reminders);
-        const remindersJSX = this._generateReminderJSX(reminders);
-        this.setState({ reminders, remindersJSX });
-      })
-    } else {
-      this.setState({ reminders: {
-        notifications: [], remindersJSX: null
-      } });
-    }
-  }
-
-  _storeNotification = async (notification) => {
-     const { reminders } = this.state;
-     reminders.notifications.push(notification)
-     const remindersJSX = this._generateReminderJSX(reminders);
-     this.setState({ reminders, remindersJSX })
-     await this._saveReminders();
-  }
-
-  _saveReminders = async () => {
-    const { reminders } = this.state;
-    await FileSystem.writeAsStringAsync(this.dir, JSON.stringify(reminders));
-  }
-
-  _scheduleReminder = async () => {
-    const notification = {
-      title: 'Expiration coming up.',
-      body: 'You have an expiration coming up soon.  '
-    };
-
-    const { dateAction, year, month, day } = await DatePickerAndroid.open({
-      date: new Date()
-    });
-    if (dateAction !== DatePickerAndroid.dismissedAction) {
-      const { action, hour, minute } = await TimePickerAndroid.open({
-        hour: 14,
-        minute: 0,
-        is24Hour: false
-      });
-      if (action !== TimePickerAndroid.dismissedAction) {
-        const date = new Date(year, month, day, hour, minute);
-        if (date > (new Date()))
-        {
-          const push = await Notifications.scheduleLocalNotificationAsync(notification, {
-            time: new Date(year, month, day, hour, minute)
-          });
-  
-          if (push !== undefined) {
-            const noteObj = {
-              id: {push},
-              date: new Date(year, month, day, hour, minute),
-            }
-            await this._storeNotification(noteObj);
-          }
-        }
+    Permissions.askAsync(Permissions.CALENDAR).then((res) => {
+      if (res.status === 'granted') {
+        this._loadCalendar().then(() => this._loadEvents());
       }
+    });
+  }
+
+  _loadEvents = async () => {
+    const currentDate = new Date();
+    Calendar.getEventsAsync(
+      [this.state.calendar.id],
+      new Date(currentDate.getDate() - 1),
+      new Date(currentDate).setFullYear(currentDate.getFullYear() + 5)
+    ).then((events) => {
+      this.setState({ events });
+    });
+  };
+
+  _loadCalendar = async () => {
+    const calendars = await Calendar.getCalendarsAsync();
+    let calendar = calendars.find((cal) => cal.name === 'Howard Center');
+    if (calendar == undefined) {
+      calendar = await this._createCalender(calendars);
+    }
+    this.setState({ calendar });
+  };
+
+  _createCalender = async (calendars) => {
+    return await Calendar.createCalendarAsync({
+      title: 'Howard Center',
+      name: 'Howard Center',
+      color: 'red',
+      entityType:
+        Platform.OS === 'ios' ? Calendar.EntityTypes.REMINDER : undefined,
+      source:
+        Platform.OS === 'android'
+          ? {
+              isLocalAccount: true,
+              name: calendars.find(
+                (cal) => cal.accessLevel == Calendar.CalendarAccessLevel.OWNER
+              ).ownerAccount
+            }
+          : undefined,
+      sourceId:
+        Platform.OS === 'ios'
+          ? calendars.find((cal) => cal.source && cal.source.name === 'Default')
+              .source.id
+          : undefined,
+      ownerAccount:
+        Platform.OS === 'android'
+          ? calendars.find(
+              (cal) => cal.accessLevel == Calendar.CalendarAccessLevel.OWNER
+            ).ownerAccount
+          : undefined,
+      accessLevel: Calendar.CalendarAccessLevel.OWNER
+    }).catch((error) => {
+      Alert.alert('Unable to create calendar', error);
+    });
+  };
+
+  _createEvent = async (calendar) => {
+    const date = await this._getTimeDate();
+    if (date != null && date >= new Date()) {
+      await Calendar.createEventAsync(calendar.calendar.id, {
+        title: 'Narcan Expires',
+        startDate: date,
+        endDate: new Date(date).setHours(date.getHours() + 5),
+        allDay: true,
+        timeZone:
+          Platform.OS === 'android'
+            ? await Localization.getLocalizationAsync()
+                .then((res) => res.timezone)
+                .catch((error) => Localization.timezone)
+            : Localization.timezone,
+        alarms: [
+          {
+            relativeOffset: -43800,
+            method: Calendar.AlarmMethod.DEFAULT
+          },
+          {
+            relativeOffset: -10080,
+            method: Calendar.AlarmMethod.DEFAULT
+          }
+        ]
+      });
+
+      this._loadEvents();
     }
   };
 
+  _getTimeDate = async () => {
+    const { action, year, month, day } = await DatePickerAndroid.open({
+      date: new Date()
+    });
+
+    if (action == DatePickerAndroid.dateSetAction) {
+      const date = new Date(year, month, day, 12);
+      return date;
+    }
+
+    return null;
+  };
+
+  _deleteEvent = async (id) => {
+    await Calendar.deleteEventAsync(id);
+    await this._loadEvents();
+  };
+
   render() {
-    const { remindersJSX } = this.state;
+    const { calendar } = this.state;
     return (
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
+      <View style={styles.contentContainer}>
+        <ReminderList
+          reminders={this.state.events}
+          handleDelete={this._deleteEvent}
+        />
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => this._createEvent({ calendar })}
         >
-          <Text>Reminder Screen</Text>
-          <Button
-            title="Set Reminder"
-            onPress={() => this._scheduleReminder()}
+          <MaterialCommunityIcons
+            style={{ position: 'absolute', top: 11, right: 12 }}
+            name="plus"
+            size={32}
+            color="white"
           />
-          { remindersJSX }
-        </ScrollView>
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
   contentContainer: {
+    flex: 1,
     paddingTop: 30
+  },
+  fab: {
+    position: 'absolute',
+    flex: 1,
+    bottom: 20,
+    right: 20,
+    height: 56,
+    width: 56,
+    backgroundColor: `#063a47`,
+    elevation: 6,
+    borderRadius: 500
   }
 });

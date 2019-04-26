@@ -1,6 +1,9 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import {
+  createStackNavigator,
+  createBottomTabNavigator
+} from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
@@ -9,9 +12,10 @@ import ContactScreen from '../screens/ContactScreen';
 import ReminderScreen from '../screens/ReminderScreen';
 
 import IconType from '../constants/IconType';
+import Colors from '../constants/Colors';
 
 const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+  Home: HomeScreen
 });
 
 HomeStack.navigationOptions = {
@@ -26,26 +30,22 @@ HomeStack.navigationOptions = {
           : 'md-information-circle'
       }
     />
-  ),
+  )
 };
 
 const MapStack = createStackNavigator({
-  Map: MapScreen,
+  Map: MapScreen
 });
 
 MapStack.navigationOptions = {
   tabBarLabel: 'Map',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      type={IconType.Feather}
-      focused={focused}
-      name="map-pin"
-    />
-  ),
+    <TabBarIcon type={IconType.Feather} focused={focused} name="map-pin" />
+  )
 };
 
 const ContactStack = createStackNavigator({
-  Contact: ContactScreen,
+  Contact: ContactScreen
 });
 
 ContactStack.navigationOptions = {
@@ -56,11 +56,11 @@ ContactStack.navigationOptions = {
       focused={focused}
       name="question-circle"
     />
-  ),
+  )
 };
 
 const ReminderStack = createStackNavigator({
-  Reminder: ReminderScreen,
+  Reminder: ReminderScreen
 });
 
 ReminderStack.navigationOptions = {
@@ -69,18 +69,21 @@ ReminderStack.navigationOptions = {
     <TabBarIcon
       type={IconType.Ionicons}
       focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? 'ios-calendar'
-          : 'md-calendar'
-      }
+      name={Platform.OS === 'ios' ? 'ios-calendar' : 'md-calendar'}
     />
-  ),
+  )
 };
 
-export default createBottomTabNavigator({
-  HomeStack,
-  MapStack,
-  ContactStack,
-  ReminderStack,
-});
+export default createBottomTabNavigator(
+  {
+    HomeStack,
+    MapStack,
+    ContactStack,
+    ReminderStack
+  },
+  {
+    tabBarOptions: {
+      activeTintColor: Colors.tabIconSelected
+    }
+  }
+);

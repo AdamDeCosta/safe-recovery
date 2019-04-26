@@ -1,21 +1,25 @@
 import React from 'react';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity
+} from 'react-native';
 import { MailComposer } from 'expo';
+import { Phone, Mail, Address } from '../components/ContactOptions';
 
 export default class ContactScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
 
-  /*
-  componentDidMount() {
+  composeMail = () => {
     MailComposer.composeAsync({
-      recipients: ['adam@decosta.io'],
-      subject: 'From App: Question',
-      body: 'Hey its adam!'
+      recipients: ['GraceK@howardcenter.org'],
+      subject: 'From App: Question'
     });
-  }
-  */
+  };
 
   render() {
     return (
@@ -24,10 +28,13 @@ export default class ContactScreen extends React.Component {
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
         >
-          <Text>Contact the Howard Center</Text>
-          <Text>(Currently yours as I don't have another) Phone - 343-0614</Text>
-          <Text>Address: 45 Clarke Street, Burlington VT 05401</Text>
-          <Text>Email: GraceK@howardcenter.org</Text>
+          <Text style={styles.header}>Contact Us</Text>
+          <Phone number="(802) 488-6067" />
+          <Address address="45 Clarke Street, Burlington VT 05401" />
+          <Mail
+            address="GraceK@howardcenter.org"
+            subject="From App: Question"
+          />
         </ScrollView>
       </View>
     );
@@ -36,9 +43,14 @@ export default class ContactScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    paddingLeft: 5
   },
   contentContainer: {
     paddingTop: 30
+  },
+  header: {
+    marginBottom: 10,
+    fontSize: 36
   }
 });

@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Button } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  Text
+} from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import SafeMap from '../components/SafeMap';
@@ -16,21 +22,24 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row'
   },
+  spinner: {
+    position: 'relative',
+    flex: 1,
+    paddingTop: 20
+  }
 });
 
 const locTypes = {
   ALL: 'ALL',
   NARCAN: 'red',
-  TYPE_2: 'blue',
-  TYPE_3: 'yellow',
+  HUB: 'blue'
 };
 
 const intToLoc = {
   0: locTypes.ALL,
   1: locTypes.NARCAN,
-  2: locTypes.TYPE_2,
-  3: locTypes.TYPE_3
-}
+  2: locTypes.HUB
+};
 
 export default class MapScreen extends React.Component {
   static navigationOptions = {
@@ -56,7 +65,7 @@ export default class MapScreen extends React.Component {
     if (status !== 'granted') {
       this.setState({ location: undefined });
     } else {
-      loc = await Location.getCurrentPositionAsync({});
+      const loc = await Location.getCurrentPositionAsync({});
       const location = {
         latitude: loc.coords.latitude,
         longitude: loc.coords.longitude,
@@ -76,7 +85,6 @@ export default class MapScreen extends React.Component {
     } else {
       visableMarkers = this.state.markers;
     }
-    
 
     this.setState({ visableMarkers });
   };
@@ -102,16 +110,36 @@ export default class MapScreen extends React.Component {
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
         >
-          <SegmentedControlTab
-            selectedIndex={this.state.selected}
-            values={['All', 'Narcan', 'Type_2', 'Type_3']}
-            onTabPress={(index) => {
-              this.setState({ selected: index });
-              console.log(intToLoc[index]);
-              this._filterMarkers(intToLoc[index]);
+          <Text
+            style={{
+              fontSize: 26,
+              paddingTop: 5,
+              paddingBottom: 5,
+              flex: 1,
+              alignSelf: 'center'
             }}
-          />
-          <SafeMap location={location}>{visableMarkers}</SafeMap>
+          >
+            Howard Center - Help Is Here
+          </Text>
+          {location != null ? (
+            <>
+              <SegmentedControlTab
+                selectedIndex={this.state.selected}
+                values={['All', 'Narcan', 'Hub']}
+                onTabPress={(index) => {
+                  this.setState({ selected: index });
+                  this._filterMarkers(intToLoc[index]);
+                }}
+              />
+              <SafeMap location={location}>{visableMarkers}</SafeMap>
+            </>
+          ) : (
+            <ActivityIndicator
+              style={styles.spinner}
+              size="large"
+              color="#063a47"
+            />
+          )}
         </ScrollView>
       </View>
     );

@@ -1,19 +1,17 @@
 import React from 'react';
 import {
-  Text,
   View,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   DatePickerAndroid,
-  Alert,
-  FlatList
+  Alert
 } from 'react-native';
-import { Calendar, Permissions, Localization } from 'expo';
+import * as Localization from 'expo-localization';
+import * as Calendar from 'expo-calendar';
+import * as Permissions from 'expo-permissions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Platform } from 'expo-core';
+import Constants from 'expo-constants';
 import { ReminderList } from '../components/Reminders';
-import { tintColor } from '../constants/Colors';
 
 export default class ReminderScreen extends React.Component {
   constructor(props) {
@@ -30,14 +28,11 @@ export default class ReminderScreen extends React.Component {
   };
 
   componentDidMount() {
-    Permissions.askAsync(Permissions.CALENDAR).then((res) => {
-      if (res.status === 'granted') {
-        this._loadCalendar().then(() => this._loadEvents());
-      }
-    });
+    this._loadCalendar();
   }
 
-  _loadEvents = async () => {
+  _loadEvents = () => {
+    console.log('loading');
     const currentDate = new Date();
     Calendar.getEventsAsync(
       [this.state.calendar.id],
@@ -49,88 +44,86 @@ export default class ReminderScreen extends React.Component {
   };
 
   _loadCalendar = async () => {
-    const calendars = await Calendar.getCalendarsAsync();
-    let calendar = calendars.find((cal) => cal.name === 'Howard Center');
-    if (calendar == undefined) {
-      calendar = await this._createCalender(calendars);
+    const { status } = await Permissions.getAsync(Permissions.CALENDAR);
+    if (status === 'granted') {
+      console.log(status);
+      const calendars = await Calendar.getCalendarsAsync();
+      let calendar = calendars.find((cal) => cal.name === 'Howard Center');
+      if (calendar === undefined) {
+        calendar = await this._createCalender(calendars);
+      }
+      this.setState({ calendar });
+      this._loadEvents();
+    } else {
+      await Permissions.askAsync(Permissions.CALENDAR);
+      this._loadCalendar();
     }
-    this.setState({ calendar });
   };
 
   _createCalender = async (calendars) => {
-    return await Calendar.createCalendarAsync({
+    const details = {
       title: 'Howard Center',
       name: 'Howard Center',
       color: 'red',
       entityType:
-        Platform.OS === 'ios' ? Calendar.EntityTypes.REMINDER : undefined,
-      source:
-        Platform.OS === 'android'
-          ? {
-              isLocalAccount: true,
-              name: calendars.find(
-                (cal) => cal.accessLevel == Calendar.CalendarAccessLevel.OWNER
-              ).ownerAccount
-            }
+        Constants.platform === 'ios'
+          ? Calendar.EntityTypes.REMINDER
           : undefined,
+      source: {
+        isLocalAccount: true,
+        name: calendars.find(
+          (cal) => cal.accessLevel == Calendar.CalendarAccessLevel.OWNER
+        ).ownerAccount
+      },
       sourceId:
-        Platform.OS === 'ios'
+        Constants.platform === 'ios'
           ? calendars.find((cal) => cal.source && cal.source.name === 'Default')
               .source.id
           : undefined,
-      ownerAccount:
-        Platform.OS === 'android'
-          ? calendars.find(
-              (cal) => cal.accessLevel == Calendar.CalendarAccessLevel.OWNER
-            ).ownerAccount
-          : undefined,
+      ownerAccount: calendars.find(
+        (cal) => cal.accessLevel == Calendar.CalendarAccessLevel.OWNER
+      ).ownerAccount,
+
       accessLevel: Calendar.CalendarAccessLevel.OWNER
-    }).catch((error) => {
-      Alert.alert('Unable to create calendar', error);
+    };
+    return await Calendar.createCalendarAsync(details).catch((error) => {
+      console.log(error);
     });
   };
 
-  _createEvent = async (calendar) => {
-    const date = await this._getTimeDate();
-    if (date != null && date >= new Date()) {
-      await Calendar.createEventAsync(calendar.calendar.id, {
-        title: 'Narcan Expires',
-        startDate: date,
-        endDate: new Date(date).setHours(date.getHours() + 5),
-        allDay: true,
-        timeZone:
-          Platform.OS === 'android'
-            ? await Localization.getLocalizationAsync()
-                .then((res) => res.timezone)
-                .catch((error) => Localization.timezone)
-            : Localization.timezone,
-        alarms: [
-          {
-            relativeOffset: -43800,
-            method: Calendar.AlarmMethod.DEFAULT
-          },
-          {
-            relativeOffset: -10080,
-            method: Calendar.AlarmMethod.DEFAULT
-          }
-        ]
-      });
+  _createEvent = () => {
+    console.log('create event');
+    this._getTimeDate().then((date) => {
+      if (date != null && date >= new Date()) {
+        console.log(this.state);
+        const endDate = new Date(date).setHours(date.getHours() + 5);
 
-      this._loadEvents();
-    }
+        Calendar.createEventAsync(this.state.calendar.id, {
+          title: 'Narcan Expires',
+          startDate: date,
+          endDate: endDate,
+          allDay: true,
+          timeZone: Localization.timezone
+        })
+          .then(() => this._loadEvents())
+          .catch((error) => console.log(error));
+      }
+    });
   };
 
   _getTimeDate = async () => {
-    const { action, year, month, day } = await DatePickerAndroid.open({
-      date: new Date()
+    console.log('get time date');
+    return new Promise((resolve, reject) => {
+      DatePickerAndroid.open({
+        date: new Date()
+      }).then(({ action, year, month, day }) => {
+        if (action == DatePickerAndroid.dateSetAction) {
+          resolve(new Date(year, month, day, 12));
+        }
+
+        resolve(null);
+      });
     });
-
-    if (action == DatePickerAndroid.dateSetAction) {
-      const date = new Date(year, month, day, 12);
-      return date;
-    }
-
-    return null;
   };
 
   _deleteEvent = async (id) => {
@@ -164,8 +157,7 @@ export default class ReminderScreen extends React.Component {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    flex: 1,
-    paddingTop: 30
+    flex: 1
   },
   fab: {
     position: 'absolute',

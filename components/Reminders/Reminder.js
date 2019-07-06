@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Platform } from 'expo-core';
+import Constants from 'expo-constants';
 
 export default class Reminder extends React.Component {
   state = {
@@ -25,7 +25,7 @@ export default class Reminder extends React.Component {
           style={styles.delete}
         >
           <Ionicons
-            name={Platform.OS === 'android' ? 'md-trash' : 'ios-trash'}
+            name={Constants.platform === 'android' ? 'md-trash' : 'ios-trash'}
             size={26}
             color="red"
           />

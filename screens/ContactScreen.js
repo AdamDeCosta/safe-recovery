@@ -24,10 +24,7 @@ export default class ContactScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
+        <ScrollView style={styles.container}>
           <Text style={styles.header}>Contact Us</Text>
           <Phone number="(802) 488-6067" />
           <Address address="45 Clarke Street, Burlington VT 05401" />
@@ -45,9 +42,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingLeft: 5
-  },
-  contentContainer: {
-    paddingTop: 30
   },
   header: {
     marginBottom: 10,

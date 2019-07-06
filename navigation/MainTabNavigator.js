@@ -1,5 +1,4 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import {
   createStackNavigator,
   createBottomTabNavigator
@@ -13,6 +12,7 @@ import ReminderScreen from '../screens/ReminderScreen';
 
 import IconType from '../constants/IconType';
 import Colors from '../constants/Colors';
+import Constants from 'expo-constants';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -25,7 +25,7 @@ HomeStack.navigationOptions = {
       type={IconType.Ionicons}
       focused={focused}
       name={
-        Platform.OS === 'ios'
+        Constants.platform === 'ios'
           ? `ios-information-circle${focused ? '' : '-outline'}`
           : 'md-information-circle'
       }
@@ -69,7 +69,7 @@ ReminderStack.navigationOptions = {
     <TabBarIcon
       type={IconType.Ionicons}
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-calendar' : 'md-calendar'}
+      name={Constants.platform === 'ios' ? 'ios-calendar' : 'md-calendar'}
     />
   )
 };

@@ -4,28 +4,23 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  Text
+  Text,
+  StatusBar
 } from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
-import { Constants, Location, Permissions, MapView } from 'expo';
+import { Location } from 'expo';
+import * as Permissions from 'expo-permissions';
+import { MapView, Marker } from 'react-native-maps';
 import SafeMap from '../components/SafeMap';
 import * as data from '../assets/locations.json';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  contentContainer: {
-    paddingTop: 25
-  },
   buttonContainer: {
-    display: 'flex',
     flexDirection: 'row'
   },
   spinner: {
     position: 'relative',
-    flex: 1,
-    paddingTop: 20
+    flex: 1
   }
 });
 
@@ -91,7 +86,7 @@ export default class MapScreen extends React.Component {
 
   _loadMarkers = () => {
     markers = data.addresses.map((address) => (
-      <MapView.Marker
+      <Marker
         coordinate={address.coordinates}
         title={address.name}
         description={address.address}
@@ -105,42 +100,37 @@ export default class MapScreen extends React.Component {
   render() {
     const { location, visableMarkers } = this.state;
     return (
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
+      <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+        <Text
+          style={{
+            fontSize: 26,
+            paddingTop: 5,
+            paddingBottom: 5,
+            alignSelf: 'center'
+          }}
         >
-          <Text
-            style={{
-              fontSize: 26,
-              paddingTop: 5,
-              paddingBottom: 5,
-              flex: 1,
-              alignSelf: 'center'
-            }}
-          >
-            Howard Center - Help Is Here
-          </Text>
-          {location != null ? (
-            <>
-              <SegmentedControlTab
-                selectedIndex={this.state.selected}
-                values={['All', 'Narcan', 'Hub']}
-                onTabPress={(index) => {
-                  this.setState({ selected: index });
-                  this._filterMarkers(intToLoc[index]);
-                }}
-              />
-              <SafeMap location={location}>{visableMarkers}</SafeMap>
-            </>
-          ) : (
-            <ActivityIndicator
-              style={styles.spinner}
-              size="large"
-              color="#063a47"
+          Howard Center - Help Is Here
+        </Text>
+        {location != null ? (
+          <>
+            <SegmentedControlTab
+              style={{}}
+              selectedIndex={this.state.selected}
+              values={['All', 'Narcan', 'Hub']}
+              onTabPress={(index) => {
+                this.setState({ selected: index });
+                this._filterMarkers(intToLoc[index]);
+              }}
             />
-          )}
-        </ScrollView>
+            <SafeMap location={location}>{visableMarkers}</SafeMap>
+          </>
+        ) : (
+          <ActivityIndicator
+            style={styles.spinner}
+            size="large"
+            color="#063a47"
+          />
+        )}
       </View>
     );
   }

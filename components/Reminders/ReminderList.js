@@ -7,12 +7,14 @@ const { width, height } = Dimensions.get('window');
 const ReminderList = ({ reminders, handleDelete }) => {
   const renderReminder = ({ item }) => {
     return (
-      <Reminder
-        id={item.id}
-        startDate={item.startDate}
-        calendarID={item.calendarID}
-        handleDelete={handleDelete}
-      />
+      <View style={{ width: width, flex: 1, alignSelf: 'stretch' }}>
+        <Reminder
+          id={item.id}
+          startDate={item.startDate}
+          calendarID={item.calendarID}
+          handleDelete={handleDelete}
+        />
+      </View>
     );
   };
 
@@ -27,7 +29,8 @@ const ReminderList = ({ reminders, handleDelete }) => {
           style={{
             flex: 1,
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            alignSelf: 'stretch'
           }}
         >
           <Image
@@ -46,8 +49,9 @@ const ReminderList = ({ reminders, handleDelete }) => {
       }
       keyExtractor={keyExtractor}
       renderItem={renderReminder}
-      style={{ flex: 1 }}
-      contentContainerStyle={{ flex: 1 }}
+      contentContainerStyle={
+        reminders == null || reminders.length == 0 ? { flex: 1 } : undefined
+      }
     />
   );
 };

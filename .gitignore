@@ -6,3 +6,5 @@ yarn.lock
 yarn-error.log
 package-lock.json
 .expo/
+.expo-shared/
+.DS_Store

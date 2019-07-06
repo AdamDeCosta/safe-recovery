@@ -7,11 +7,11 @@ import {
   Linking
 } from 'react-native';
 import { Icon } from 'expo';
-import { Platform } from 'expo-core';
+import Constants from 'expo-constants';
 
 const Address = ({ address }) => {
   const handlePress = () => {
-    if (Platform.OS === 'ios') {
+    if (Constants.Platform === 'ios') {
       Linking.openURL(
         // Not really modular but whatever
         `https://maps.apple.com/?daddr=${encodeURI(address)}`
@@ -28,7 +28,7 @@ const Address = ({ address }) => {
   return (
     <View style={styles.container}>
       <Icon.Ionicons
-        name={Platform.OS === 'android' ? 'md-business' : 'ios-business'}
+        name={Constants.platform === 'android' ? 'md-business' : 'ios-business'}
         style={styles.icon}
         size={26}
       />

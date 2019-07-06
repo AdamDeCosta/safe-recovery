@@ -3,19 +3,10 @@ import { MapView } from 'expo';
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  paragraph: {
-    margin: 24,
-    fontSize: 18,
-    textAlign: 'center'
-  },
   map: {
+    flex: 1,
     alignSelf: 'stretch',
-    height: 400
+    height: '100%'
   }
 });
 
